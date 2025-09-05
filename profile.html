@@ -1,551 +1,616 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team-Up - Profile</title>
-<style>
-/* General Reset */
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0f0f1e, #1a1a3d);
-    color: #fff;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team-Up - Profile</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        /* ---- Background Canvas ---- */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+        }
 
-/* Navbar */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(20, 20, 40, 0.9);
-    padding: 15px 40px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-}
+        /* ---- General Styles (reused from index/teams) ---- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: #00f2fe;
-}
+        body {
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63);
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-.nav-links a {
-    margin-left: 20px;
-    text-decoration: none;
-    color: #fff;
-    font-weight: 500;
-    transition: 0.3s;
-}
+        /* ---- Navbar ---- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+        }
 
-.nav-links a:hover {
-    color: #00f2fe;
-}
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.btn {
-    background: linear-gradient(135deg, #00f2fe, #4facfe);
-    padding: 8px 16px;
-    border-radius: 20px;
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
-    border: none;
-    cursor: pointer;
-}
+        .nav-links a {
+            margin: 0 12px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
 
-.btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 12px rgba(0,242,254,0.6);
-}
+        .nav-links a:hover {
+            color: #00e5ff;
+        }
 
-/* Profile Section - UPDATED FOR FLEXBOX */
-.profile-section {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 60px 20px;
-    gap: 40px;
-    flex-wrap: wrap;
-    flex: 1;
-}
+        .btn {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+            text-decoration: none;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
 
-/* Profile Card */
-.profile-card {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 40px;
-    border-radius: 15px;
-    text-align: center;
-    width: 320px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 242, 254, 0.3);
-    box-shadow: 0 0 20px rgba(0, 242, 254, 0.15);
-    flex-shrink: 0;
-}
+        .btn:hover {
+            transform: scale(1.05);
+        }
 
-.profile-pic {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin-bottom: 15px;
-    object-fit: cover;
-    border: 3px solid #00f2fe;
-    box-shadow: 0 0 15px rgba(0,242,254,0.5);
-}
+        .profile-btn {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: 0.3s;
+            text-decoration: none;
+            color: #fff;
+        }
 
-.profile-card h2 {
-    font-size: 24px;
-    margin: 10px 0;
-    background: linear-gradient(135deg, #00f2fe, #4facfe);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+        .profile-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-.profile-card p {
-    margin: 5px 0;
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.85);
-}
-.profile-buttons {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-/* Teams Card Styling */
-.teams-card {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 30px 40px;
-    border-radius: 15px;
-    width: 380px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 242, 254, 0.3);
-    box-shadow: 0 0 20px rgba(0, 242, 254, 0.15);
-    flex-shrink: 0;
-}
+        /* ---- Profile Section ---- */
+        .profile-section {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 60px 20px;
+            gap: 40px;
+            flex-wrap: wrap;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
 
-.teams-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(0, 242, 254, 0.3);
-}
+        /* Profile Card */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            width: 320px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .profile-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0 18px rgba(0, 255, 255, 0.3);
+        }
 
-.teams-header h2 {
-    margin: 0;
-    color: #00f2fe;
-}
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+            border: 3px solid #00e5ff;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
 
-#member-counter {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
-    background: rgba(0,0,0,0.25);
-    padding: 4px 12px;
-    border-radius: 15px;
-}
+        .profile-card h2 {
+            font-size: 24px;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-/* Member Placeholders Styling */
-.team-member-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
+        .profile-card p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        .profile-buttons {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-.member-placeholder {
-    background: rgba(0, 0, 0, 0.25);
-    padding: 10px 15px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    border: 1px solid transparent;
-    transition: border-color 0.3s, background-color 0.3s;
-}
+        /* Teams Card Styling */
+        .teams-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px 40px;
+            border-radius: 15px;
+            width: 380px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .teams-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0 18px rgba(0, 255, 255, 0.3);
+        }
 
-.member-placeholder:hover {
-    background-color: rgba(0, 0, 0, 0.4);
-    border-color: rgba(0, 242, 254, 0.2);
-}
+        .teams-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
 
-.member-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
+        .teams-header h2 {
+            margin: 0;
+            color: #00e5ff;
+        }
 
-.member-avatar {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px dashed rgba(0, 242, 254, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: rgba(0, 242, 254, 0.6);
-    font-size: 20px;
-    font-weight: bold;
-}
+        #member-counter {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            background: rgba(0, 0, 0, 0.25);
+            padding: 4px 12px;
+            border-radius: 15px;
+        }
 
-.member-placeholder .btn {
-    padding: 4px 8px;
-    font-size: 0.8em;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #ff7e5f, #feb47b);
-}
+        /* Member Placeholders Styling */
+        .team-member-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-.member-placeholder span {
-    color: rgba(255, 255, 255, 0.7);
-}
+        .member-placeholder {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid transparent;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
 
-/* Modal specific styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1001;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.5);
-    backdrop-filter: blur(5px);
-}
+        .member-placeholder:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+            border-color: rgba(0, 255, 255, 0.2);
+        }
 
-.modal-content {
-    background: linear-gradient(135deg, #1a1a3d, #0f0f1e);
-    color: #fff;
-    margin: 15% auto;
-    padding: 30px;
-    border: 1px solid rgba(0, 242, 254, 0.3);
-    width: 80%;
-    max-width: 500px;
-    border-radius: 15px;
-    box-shadow: 0 0 25px rgba(0, 242, 254, 0.3);
-}
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-.close-btn {
-    color: #fff;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-    cursor: pointer;
-}
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(0, 255, 255, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgba(0, 255, 255, 0.6);
+            font-size: 20px;
+            font-weight: bold;
+        }
 
-.close-btn:hover {
-    opacity: 1;
-}
+        .member-placeholder .btn {
+            padding: 4px 8px;
+            font-size: 0.8em;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        }
 
-.modal-input-group {
-    margin-bottom: 20px;
-}
+        .member-placeholder span {
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-.modal-input-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #00f2fe;
-}
+        /* Modal specific styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
 
-.modal-input-group input {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid rgba(0, 242, 254, 0.3);
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.05);
-    color: #fff;
-}
+        .modal-content {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            margin: 15% auto;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 80%;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+        }
 
-.modal-content .btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1em;
-    margin-top: 10px;
-}
+        .close-btn {
+            color: #fff;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
 
-/* Footer */
-.footer {
-    text-align: center;
-    padding: 15px;
-    background: rgba(20, 20, 40, 0.9);
-    font-size: 14px;
-    color: #aaa;
-    margin-top: auto;
-}
+        .close-btn:hover {
+            opacity: 1;
+        }
 
-/* Responsive Design */
-@media (max-width: 800px) {
-    .profile-section {
-        flex-direction: column;
-        align-items: center;
-        gap: 30px;
-    }
-    .profile-card, .teams-card {
-        width: 90%;
-        max-width: 400px;
-    }
-}
-</style>
+        .modal-input-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #00e5ff;
+        }
+
+        .modal-input-group input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .modal-input-group input:focus {
+            border-color: #00e5ff;
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+        }
+
+        .modal-content .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        /* ---- Footer ---- */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* ---- Responsive Design ---- */
+        @media (max-width: 800px) {
+            .profile-section {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+            .profile-card, .teams-card {
+                width: 90%;
+                max-width: 400px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
 
-<!-- Navigation Bar -->
-<header class="navbar">
-    <div class="logo">Team-Up</div>
-    <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="teams.html">Teams</a>
-        <a href="profile.html" class="profile-btn">👤</a>
-    </nav>
-</header>
+    <header class="navbar">
+        <div class="logo">Team-Up</div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="teams.html">Teams</a>
+            <a href="profile.html" class="profile-btn">👤</a>
+        </nav>
+    </header>
 
-<!-- Main Content -->
-<main class="profile-section">
-    <!-- User Profile Card -->
-    <div class="profile-card">
-        <img src="pp.png" alt="User Profile Picture" class="profile-pic">
-        <h2 id="user-name">Your Name</h2>
-        <p id="user-bio">Your Skills Here</p>
+    <main class="profile-section">
+        <div class="profile-card">
+            <img src="pp.png" alt="User Profile Picture" class="profile-pic">
+            <h2 id="user-name">Your Name</h2>
+            <p id="user-bio">Your Skills Here</p>
 
-        <div class="profile-buttons">
-            <button id="edit-profile-btn" class="btn">Edit Profile</button>
+            <div class="profile-buttons">
+                <button id="edit-profile-btn" class="btn">Edit Profile</button>
+            </div>
         </div>
-    </div>
 
-    <!-- Team Members Card -->
-    <div class="teams-card">
-        <div class="teams-header">
-            <h2>My Team</h2>
-            <span><span> Total Members : </span><span id="member-counter">0/5</span></span>
-            
-        </div>
-        <div class="team-member-list" id="team-list">
-            <!-- Member placeholders will be added here dynamically -->
-        </div>
-        <button id="add-team-member-btn" class="btn" onclick="window.location.href='teams.html';" style="width: 100%; margin-top: 20px;">Add Team Member</button>
-    </div>
-</main>
-
-<!-- Add Member Modal -->
-<div id="addMemberModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>Add Member</h2>
-        <form id="add-member-form">
-            <div class="modal-input-group">
-                <label for="memberName">Member Name</label>
-                <input type="text" id="memberName" required>
+        <div class="teams-card">
+            <div class="teams-header">
+                <h2>My Team</h2>
+                <span> Total Members : <span id="member-counter">0/5</span></span>
             </div>
-            <div class="modal-input-group">
-                <label for="memberSkills">Member Skills</label>
-                <input type="text" id="memberSkills" required>
-            </div>
-            <button type="submit" class="btn">Add to Team</button>
-        </form>
-    </div>
-</div>
-
-<!-- Edit Profile Modal -->
-<div id="editProfileModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>Edit Profile</h2>
-        <form id="edit-profile-form">
-            <div class="modal-input-group">
-                <label for="editName">Name</label>
-                <input type="text" id="editName" required>
-            </div>
-            <div class="modal-input-group">
-                <label for="editSkills">Skills/Bio</label>
-                <input type="text" id="editSkills" required>
-            </div>
-            <button type="submit" class="btn">Save Changes</button>
-        </form>
-    </div>
-</div>
-
-<!-- Footer -->
-<footer class="footer">
-    <p>© 2025 Team-Up | The Programming Club</p>
-</footer>
-
-<script>
-    const teamListElement = document.getElementById('team-list');
-    const memberCounterElement = document.getElementById('member-counter');
-    const addMemberBtn = document.getElementById('add-team-member-btn');
-    const addMemberModal = document.getElementById('addMemberModal');
-    const editProfileModal = document.getElementById('editProfileModal');
-    const addMemberForm = document.getElementById('add-member-form');
-    const editProfileForm = document.getElementById('edit-profile-form');
-    const memberNameInput = document.getElementById('memberName');
-    const memberSkillsInput = document.getElementById('memberSkills');
-    const userNameElement = document.getElementById('user-name');
-    const userBioElement = document.getElementById('user-bio');
-    const editProfileBtn = document.getElementById('edit-profile-btn');
-    const editNameInput = document.getElementById('editName');
-    const editSkillsInput = document.getElementById('editSkills');
-
-    const MAX_TEAM_SIZE = 5;
-    const TEAM_STORAGE_KEY = 'teamMembers';
-    const PROFILE_STORAGE_KEY = 'userProfile';
-
-    // --- Profile Data Functions ---
-    function getProfile() {
-        const profile = localStorage.getItem(PROFILE_STORAGE_KEY);
-        return profile ? JSON.parse(profile) : { name: 'Your Name', bio: 'Your Skills Here' };
-    }
-
-    function saveProfile(profile) {
-        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
-        renderProfile();
-    }
-
-    function renderProfile() {
-        const profile = getProfile();
-        userNameElement.textContent = profile.name;
-        userBioElement.textContent = profile.bio;
-    }
-
-    // --- Team Data Functions ---
-    function getTeamMembers() {
-        const team = localStorage.getItem(TEAM_STORAGE_KEY);
-        return team ? JSON.parse(team) : [];
-    }
-
-    function saveTeamMembers(team) {
-        localStorage.setItem(TEAM_STORAGE_KEY, JSON.stringify(team));
-        renderTeamMembers();
-    }
-
-    function renderTeamMembers() {
-        const teamMembers = getTeamMembers();
-        teamListElement.innerHTML = '';
-        
-        // Render current team members
-        teamMembers.forEach(member => {
-            const memberDiv = document.createElement('div');
-            memberDiv.className = 'member-placeholder';
-            memberDiv.innerHTML = `
-                <div class="member-info">
-                    <div class="member-avatar">👤</div>
-                    <div>
-                        <strong>${member.name}</strong><br>
-                        <span>${member.skills}</span>
-                    </div>
+            <div class="team-member-list" id="team-list">
                 </div>
-                <button class="btn remove-btn" data-member-name="${member.name}">Remove</button>
-            `;
-            teamListElement.appendChild(memberDiv);
+            <button id="add-team-member-btn" class="btn" style="width: 100%; margin-top: 20px;">Add Team Member</button>
+        </div>
+    </main>
+
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="edit-profile-form">
+                <div class="modal-input-group">
+                    <label for="editName">Name</label>
+                    <input type="text" id="editName" required>
+                </div>
+                <div class="modal-input-group">
+                    <label for="editSkills">Skills/Bio</label>
+                    <input type="text" id="editSkills" required>
+                </div>
+                <button type="submit" class="btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="messageModal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <span class="close-btn">&times;</span>
+            <h3>Notice</h3>
+            <p id="message-text"></p>
+            <button class="btn" onclick="document.getElementById('messageModal').style.display = 'none';">OK</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2025 Team-Up | The Programming Club</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+
+    <script>
+        // Three.js Background Animation Script
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bg-canvas"), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // Particles
+        const particlesCount = 500;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particlesCount * 3);
+
+        for (let i = 0; i < particlesCount * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 20;
+        }
+
+        geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+        const material = new THREE.PointsMaterial({
+            color: 0x00e5ff,
+            size: 0.05,
+            transparent: true,
+            opacity: 0.8
         });
 
-        // Fill remaining slots with placeholders
-        const remainingSlots = MAX_TEAM_SIZE - teamMembers.length;
-        for (let i = 0; i < remainingSlots; i++) {
-            const placeholderDiv = document.createElement('div');
-            placeholderDiv.className = 'member-placeholder';
-            placeholderDiv.innerHTML = `<div class="member-avatar">+</div><span>Open Slot</span>`;
-            teamListElement.appendChild(placeholderDiv);
-        }
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
 
-        memberCounterElement.textContent = `${teamMembers.length}/${MAX_TEAM_SIZE}`;
-        
-        // Add/remove event listeners for remove buttons
-        document.querySelectorAll('.remove-btn').forEach(button => {
-            button.addEventListener('click', handleRemoveMember);
+        camera.position.z = 5;
+
+        // Animate
+        function animate() {
+            requestAnimationFrame(animate);
+
+            particles.rotation.y += 0.001;
+            particles.rotation.x += 0.0005;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle Resize
+        window.addEventListener("resize", () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
-        
-        // Change button text and behavior based on team size
-        if (teamMembers.length >= MAX_TEAM_SIZE) {
-            addMemberBtn.textContent = 'Team is Full';
-            addMemberBtn.onclick = function(event) {
-                displayMessageModal("Your team is full! Please remove a member to add a new one.");
+
+        // --- Profile Page Scripting ---
+        const teamListElement = document.getElementById('team-list');
+        const memberCounterElement = document.getElementById('member-counter');
+        const addTeamMemberBtn = document.getElementById('add-team-member-btn');
+        const editProfileModal = document.getElementById('editProfileModal');
+        const editProfileForm = document.getElementById('edit-profile-form');
+        const userNameElement = document.getElementById('user-name');
+        const userBioElement = document.getElementById('user-bio');
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const editNameInput = document.getElementById('editName');
+        const editSkillsInput = document.getElementById('editSkills');
+        const messageModal = document.getElementById('messageModal');
+        const messageTextElement = document.getElementById('message-text');
+
+        const MAX_TEAM_SIZE = 5;
+        const TEAM_STORAGE_KEY = 'teamMembers';
+        const PROFILE_STORAGE_KEY = 'userProfile';
+
+        // --- Profile Data Functions ---
+        function getProfile() {
+            const profile = localStorage.getItem(PROFILE_STORAGE_KEY);
+            return profile ? JSON.parse(profile) : { name: 'Your Name', bio: 'Your Skills Here' };
+        }
+
+        function saveProfile(profile) {
+            localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+            renderProfile();
+        }
+
+        function renderProfile() {
+            const profile = getProfile();
+            userNameElement.textContent = profile.name;
+            userBioElement.textContent = profile.bio;
+        }
+
+        // --- Team Data Functions ---
+        function getTeamMembers() {
+            const team = localStorage.getItem(TEAM_STORAGE_KEY);
+            return team ? JSON.parse(team) : [];
+        }
+
+        function saveTeamMembers(team) {
+            localStorage.setItem(TEAM_STORAGE_KEY, JSON.stringify(team));
+            renderTeamMembers();
+        }
+
+        function renderTeamMembers() {
+            const teamMembers = getTeamMembers();
+            teamListElement.innerHTML = '';
+
+            teamMembers.forEach(member => {
+                const memberDiv = document.createElement('div');
+                memberDiv.className = 'member-placeholder';
+                memberDiv.innerHTML = `
+                    <div class="member-info">
+                        <div class="member-avatar">👤</div>
+                        <div>
+                            <strong>${member.name}</strong><br>
+                            <span>${member.skills}</span>
+                        </div>
+                    </div>
+                    <button class="btn remove-btn" data-member-name="${member.name}">Remove</button>
+                `;
+                teamListElement.appendChild(memberDiv);
+            });
+
+            const remainingSlots = MAX_TEAM_SIZE - teamMembers.length;
+            for (let i = 0; i < remainingSlots; i++) {
+                const placeholderDiv = document.createElement('div');
+                placeholderDiv.className = 'member-placeholder';
+                placeholderDiv.innerHTML = `<div class="member-avatar">+</div><span>Open Slot</span>`;
+                teamListElement.appendChild(placeholderDiv);
+            }
+
+            memberCounterElement.textContent = `${teamMembers.length}/${MAX_TEAM_SIZE}`;
+
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', handleRemoveMember);
+            });
+
+            if (teamMembers.length >= MAX_TEAM_SIZE) {
+                addTeamMemberBtn.textContent = 'Team is Full';
+                addTeamMemberBtn.onclick = function() {
+                    displayMessageModal("Your team is full! Please remove a member to add a new one.");
+                };
+            } else {
+                addTeamMemberBtn.textContent = 'Add Team Member';
+                addTeamMemberBtn.onclick = function() {
+                    window.location.href = 'teams.html';
+                };
+            }
+        }
+
+        // --- Event Handlers ---
+        function handleRemoveMember(event) {
+            const button = event.target;
+            const memberName = button.dataset.memberName;
+            const teamMembers = getTeamMembers();
+            const updatedTeam = teamMembers.filter(member => member.name !== memberName);
+            saveTeamMembers(updatedTeam);
+        }
+
+        function displayMessageModal(message) {
+            messageTextElement.textContent = message;
+            messageModal.style.display = 'block';
+        }
+
+        editProfileBtn.onclick = function() {
+            const profile = getProfile();
+            editNameInput.value = profile.name;
+            editSkillsInput.value = profile.bio;
+            editProfileModal.style.display = "block";
+        }
+
+        document.querySelectorAll('.close-btn').forEach(btn => {
+            btn.onclick = function() {
+                btn.closest('.modal').style.display = "none";
             };
-        } else {
-            addMemberBtn.textContent = 'Add Team Member';
-            addMemberBtn.onclick = function() {
-                window.location.href='teams.html';
+        });
+
+        editProfileForm.onsubmit = function(event) {
+            event.preventDefault();
+            const updatedProfile = {
+                name: editNameInput.value,
+                bio: editSkillsInput.value
             };
-        }
-    }
-
-    // --- Event Handlers ---
-    function handleRemoveMember(event) {
-        const button = event.target;
-        const memberName = button.dataset.memberName;
-        const teamMembers = getTeamMembers();
-        const updatedTeam = teamMembers.filter(member => member.name !== memberName);
-        saveTeamMembers(updatedTeam);
-    }
-    
-    // Custom message modal instead of alert()
-    function displayMessageModal(message) {
-        const existingModal = document.getElementById('messageModal');
-        if (existingModal) existingModal.remove();
-
-        const messageModal = document.createElement('div');
-        messageModal.id = 'messageModal';
-        messageModal.className = 'modal';
-        messageModal.innerHTML = `
-            <div class="modal-content" style="text-align: center;">
-                <span class="close-btn" onclick="document.getElementById('messageModal').remove()">&times;</span>
-                <h3>Notice</h3>
-                <p>${message}</p>
-                <button class="btn" onclick="document.getElementById('messageModal').remove()">OK</button>
-            </div>
-        `;
-        document.body.appendChild(messageModal);
-        messageModal.style.display = 'block';
-    }
-
-    // Event listeners for Edit Profile modal
-    editProfileBtn.onclick = function() {
-        const profile = getProfile();
-        editNameInput.value = profile.name;
-        editSkillsInput.value = profile.bio;
-        editProfileModal.style.display = "block";
-    }
-
-    document.querySelectorAll('#editProfileModal .close-btn').forEach(btn => {
-        btn.onclick = function() {
-            editProfileModal.style.display = "none";
-        };
-    });
-
-    editProfileForm.onsubmit = function(event) {
-        event.preventDefault();
-        const updatedProfile = {
-            name: editNameInput.value,
-            bio: editSkillsInput.value
-        };
-        saveProfile(updatedProfile);
-        editProfileModal.style.display = "none";
-    }
-
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-        if (event.target == addMemberModal) {
-            addMemberModal.style.display = "none";
-        }
-        if (event.target == editProfileModal) {
+            saveProfile(updatedProfile);
             editProfileModal.style.display = "none";
         }
-    }
 
-    // Initial render on page load
-    window.onload = function() {
-        renderProfile();
-        renderTeamMembers();
-    };
-</script>
+        window.onclick = function(event) {
+            if (event.target == editProfileModal) {
+                editProfileModal.style.display = "none";
+            }
+            if (event.target == messageModal) {
+                messageModal.style.display = "none";
+            }
+        }
+
+        window.onload = function() {
+            renderProfile();
+            renderTeamMembers();
+        };
+    </script>
 </body>
 </html>
