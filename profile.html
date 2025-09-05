@@ -316,6 +316,7 @@ body {
         <img src="pp.png" alt="User Profile Picture" class="profile-pic">
         <h2 id="user-name">Your Name</h2>
         <p id="user-bio">Your Skills Here</p>
+
         <div class="profile-buttons">
             <button id="edit-profile-btn" class="btn">Edit Profile</button>
         </div>
@@ -325,15 +326,13 @@ body {
     <div class="teams-card">
         <div class="teams-header">
             <h2>My Team</h2>
-            <span > <span> Total Members :</span>
-                <span id="member-counter">0/5</span>
-            </span>
+            <span><span> Total Members : </span><span id="member-counter">0/5</span></span>
             
         </div>
         <div class="team-member-list" id="team-list">
             <!-- Member placeholders will be added here dynamically -->
         </div>
-        <button id="add-team-member-btn" class="btn" style="width: 100%; margin-top: 20px;">Add Team Member</button>
+        <button id="add-team-member-btn" class="btn" onclick="window.location.href='teams.html';" style="width: 100%; margin-top: 20px;">Add Team Member</button>
     </div>
 </main>
 
@@ -465,12 +464,17 @@ body {
             button.addEventListener('click', handleRemoveMember);
         });
         
-        // Disable "Add Member" button if team is full
-        addMemberBtn.disabled = teamMembers.length >= MAX_TEAM_SIZE;
-        if (addMemberBtn.disabled) {
+        // Change button text and behavior based on team size
+        if (teamMembers.length >= MAX_TEAM_SIZE) {
             addMemberBtn.textContent = 'Team is Full';
+            addMemberBtn.onclick = function(event) {
+                displayMessageModal("Your team is full! Please remove a member to add a new one.");
+            };
         } else {
             addMemberBtn.textContent = 'Add Team Member';
+            addMemberBtn.onclick = function() {
+                window.location.href='teams.html';
+            };
         }
     }
 
@@ -503,36 +507,6 @@ body {
         messageModal.style.display = 'block';
     }
 
-    // Event listeners for Add Member modal
-    addMemberBtn.onclick = function() {
-        addMemberModal.style.display = "block";
-    }
-
-    document.querySelectorAll('#addMemberModal .close-btn').forEach(btn => {
-        btn.onclick = function() {
-            addMemberModal.style.display = "none";
-            addMemberForm.reset();
-        };
-    });
-
-    addMemberForm.onsubmit = function(event) {
-        event.preventDefault();
-        const memberName = memberNameInput.value;
-        const memberSkills = memberSkillsInput.value;
-
-        if (memberName && memberSkills) {
-            const teamMembers = getTeamMembers();
-            if (teamMembers.length < MAX_TEAM_SIZE) {
-                teamMembers.push({ name: memberName, skills: memberSkills });
-                saveTeamMembers(teamMembers);
-                addMemberModal.style.display = "none";
-                addMemberForm.reset();
-            } else {
-                displayMessageModal("Your team is full! Please remove a member to add a new one.");
-            }
-        }
-    }
-
     // Event listeners for Edit Profile modal
     editProfileBtn.onclick = function() {
         const profile = getProfile();
@@ -561,7 +535,6 @@ body {
     window.onclick = function(event) {
         if (event.target == addMemberModal) {
             addMemberModal.style.display = "none";
-            addMemberForm.reset();
         }
         if (event.target == editProfileModal) {
             editProfileModal.style.display = "none";
