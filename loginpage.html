@@ -7,15 +7,12 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: "Segoe UI", Tahoma, sans-serif;
+      font-family: Arial, sans-serif;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       color: #fff;
-      overflow: hidden;
+      overflow: hidden; /* This MUST stay hidden for the canvas bg */
       position: relative;
-      background: #0a0f25; /* dark blue background */
+      background: #0f0f1e; 
     }
 
     /* Canvas background */
@@ -27,19 +24,67 @@
       display: block;
     }
 
-    /* ---- Container ---- */
+    /* --- Navbar Styling --- */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(20, 20, 40, 0.9);
+        padding: 15px 40px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        position: fixed; /* Keep navbar at the top */
+        top: 0;
+        width: 100%;
+        z-index: 100; /* Ensure it's above other content */
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #00f2fe;
+    }
+
+    .nav-links a {
+        margin-left: 20px;
+        text-decoration: none;
+        color: #fff;
+        font-weight: 500;
+        transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+        color: #00f2fe;
+    }
+    
+    /* --- Main content area --- */
+    .main-content {
+        position: absolute;
+        top: 70px; /* Height of the navbar */
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow-y: auto; 
+        display: flex;
+        justify-content: center;
+        align-items: center; /* Vertically center content */
+        padding: 20px; 
+    }
+
+    /* ---- MODIFIED Container ---- */
     .login-container {
-      width: 100%; max-width: 400px;
+      width: 100%; 
+      max-width: 360px; /* Made smaller */
       background: rgba(10, 15, 37, 0.75);
       border: 1px solid rgba(0, 255, 255, 0.25);
       border-radius: 16px;
-      padding: 40px 30px;
+      padding: 35px 30px; /* Reduced vertical padding */
       text-align: center;
       box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
       backdrop-filter: blur(15px);
       position: relative;
       z-index: 10;
-      transition: box-shadow 0.3s ease;
+      transition: box-shadow 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+      margin: 20px 0; 
     }
     .login-container:hover {
       box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
@@ -47,30 +92,33 @@
 
     /* ---- Headings ---- */
     .main-title {
-      font-size: 32px; font-weight: 700;
+      font-size: 30px; /* Slightly smaller */
+      font-weight: 700;
       background: linear-gradient(135deg, #00aaff, #004466);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 12px;
       letter-spacing: 1.2px;
+      transition: font-size 0.3s ease, margin-bottom 0.3s ease;
     }
     .subtitle {
       font-size: 15px;
       color: rgba(255, 255, 255, 0.75);
-      margin-bottom: 32px;
+      margin-bottom: 28px; /* Reduced margin */
       font-weight: 500;
+      transition: margin-bottom 0.3s ease;
     }
 
     /* ---- Form ---- */
-    .form-group { text-align: left; margin-bottom: 22px; }
+    .form-group { text-align: left; margin-bottom: 20px; transition: margin-bottom 0.3s ease; } /* Reduced margin */
     label { font-size: 14px; color: #a0cfff; display: block; margin-bottom: 8px; font-weight: 600; }
     .form-input {
-      width: 100%; padding: 14px 18px;
+      width: 100%; padding: 12px 16px; /* Reduced padding */
       border-radius: 10px;
       border: 1.5px solid rgba(0, 255, 255, 0.3);
       background: rgba(10, 15, 37, 0.6);
       color: #cceeff; font-size: 15px;
-      transition: border-color 0.3s ease, background 0.3s ease;
+      transition: border-color 0.3s ease, background 0.3s ease, padding 0.3s ease;
       font-weight: 500;
     }
     .form-input::placeholder {
@@ -85,9 +133,9 @@
     }
 
     /* ---- Links ---- */
-    .forgot-password { text-align: right; margin: 12px 0 24px; }
+    .forgot-password { text-align: right; margin: 10px 0 20px; transition: margin 0.3s ease; } /* Adjusted margin */
     .forgot-password a {
-      font-size: 14px;
+      font-size: 13px;
       color: #00cfff;
       text-decoration: none;
       font-weight: 600;
@@ -97,11 +145,11 @@
 
     /* ---- Button ---- */
     .sign-in-btn {
-      width: 100%; padding: 16px;
+      width: 100%; padding: 14px; /* Reduced padding */
       border: none; border-radius: 10px;
       background: linear-gradient(135deg, #00e5ff, #004466);
       color: #fff; font-size: 16px; font-weight: 700;
-      cursor: pointer; transition: background 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer; transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
       box-shadow: 0 0 12px #00e5ffaa;
     }
     .sign-in-btn:hover {
@@ -110,7 +158,7 @@
     }
 
     /* ---- Divider ---- */
-    .divider { display: flex; align-items: center; margin: 24px 0; }
+    .divider { display: flex; align-items: center; margin: 24px 0; transition: margin 0.3s ease;}
     .divider::before, .divider::after {
       content: ""; flex: 1; height: 1px; background: rgba(0, 255, 255, 0.15);
     }
@@ -127,6 +175,7 @@
       display: flex;
       gap: 14px;
       margin-bottom: 24px;
+      transition: margin-bottom 0.3s ease;
     }
     .social-btn {
       flex: 1;
@@ -161,38 +210,81 @@
       transition: color 0.3s ease;
     }
     .signup-link a:hover { color: #4facfe; }
+
+    /* --- NEW: Responsive adjustments for shorter screens --- */
+    @media (max-height: 780px) {
+      .main-content {
+        align-items: flex-start; /* Align to top to prevent cutoff */
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      .login-container {
+        padding: 25px 25px; /* Reduce padding */
+        margin: 10px 0; /* Reduce margin */
+      }
+      .main-title {
+        font-size: 26px; /* Reduce font size */
+        margin-bottom: 8px;
+      }
+      .subtitle {
+        margin-bottom: 20px;
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-input {
+        padding: 10px 14px;
+      }
+       .sign-in-btn {
+        padding: 12px;
+      }
+      .divider {
+        margin: 20px 0;
+      }
+      .social-buttons {
+        margin-bottom: 20px;
+      }
+    }
   </style>
 </head>
 <body>
   <canvas id="bg"></canvas>
+  
+  <header class="navbar">
+    <div class="logo">Team-Up</div>
+    <nav class="nav-links">
+        <a href="index.html">Home</a>
+    </nav>
+  </header>
 
-  <div class="login-container" role="main" aria-label="Login form">
-    <h1 class="main-title">Welcome Back</h1>
-    <p class="subtitle">Sign in to continue</p>
+  <main class="main-content">
+      <div class="login-container" role="main" aria-label="Login form">
+        <h1 class="main-title">Welcome Back</h1>
+        <p class="subtitle">Sign in to continue</p>
 
-    <form>
-      <div class="form-group">
-        <label for="email">Email address</label>
-        <input type="email" id="email" class="form-input" placeholder="you@example.com" required autocomplete="email" />
+        <form>
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" class="form-input" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Enter your password" required autocomplete="current-password" />
+          </div>
+          <div class="forgot-password"><a href="#" tabindex="0">Forgot Password?</a></div>
+          <button type="submit" class="sign-in-btn">Sign In</button>
+        </form>
+
+        <div class="divider"><span>or continue with</span></div>
+        <div class="social-buttons">
+          <a href="#" class="social-btn" tabindex="0" aria-label="Sign in with Google">Google</a>
+          <a href="#" class="social-btn" tabindex="0" aria-label="Sign in with GitHub">GitHub</a>
+          <a href="#" class="social-btn" tabindex="0" aria-label="Sign in with LinkedIn">LinkedIn</a>
+        </div>
+        <div class="signup-link">Don’t have an account? <a href="#" tabindex="0">Sign up</a></div>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" class="form-input" placeholder="Enter your password" required autocomplete="current-password" />
-      </div>
-      <div class="forgot-password"><a href="#" tabindex="0">Forgot Password?</a></div>
-      <button type="submit" class="sign-in-btn">Sign In</button>
-    </form>
+  </main>
 
-    <div class="divider"><span>or continue with</span></div>
-    <div class="social-buttons">
-      <a href="#" class="social-btn" tabindex="0" aria-label="Sign in with Google">Google</a>
-      <a href="#" class="social-btn" tabindex="0" aria-label="Sign in with GitHub">GitHub</a>
-      <a href="#" class="social-btn" tabindex="0" aria-label="Sign in with LinkedIn">LinkedIn</a>
-    </div>
-    <div class="signup-link">Don’t have an account? <a href="#" tabindex="0">Sign up</a></div>
-  </div>
-
-  <!-- Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
   <script>
     const canvas = document.getElementById("bg");
@@ -208,15 +300,12 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x0a0f25, 1); // dark blue background
 
-    // Create a group to hold stars for rotation
     const starsGroup = new THREE.Group();
     scene.add(starsGroup);
 
-    // Star parameters
     const starCount = 400;
     const starGeometry = new THREE.SphereGeometry(0.1, 8, 8);
 
-    // Create a glowing material using MeshBasicMaterial with emissive color
     const starMaterial = new THREE.MeshBasicMaterial({
       color: 0x004466,
       transparent: true,
@@ -224,40 +313,27 @@
       blending: THREE.AdditiveBlending,
     });
 
-    // Create a glow sprite texture for stars
     const spriteTexture = new THREE.TextureLoader().load(
       "https://threejs.org/examples/textures/sprites/glow.png"
     );
 
-    // Create stars with glow sprites
     for (let i = 0; i < starCount; i++) {
-      // Create star mesh
       const star = new THREE.Mesh(starGeometry, starMaterial.clone());
-
-      // Random position in a sphere shell (radius 20 to 50)
       const radius = THREE.MathUtils.randFloat(20, 50);
       const theta = THREE.MathUtils.randFloat(0, Math.PI * 2);
       const phi = THREE.MathUtils.randFloat(0, Math.PI);
-
       star.position.set(
         radius * Math.sin(phi) * Math.cos(theta),
         radius * Math.sin(phi) * Math.sin(theta),
         radius * Math.cos(phi)
       );
-
-      // Random scale for variety
       const scale = THREE.MathUtils.randFloat(0.5, 1.2);
       star.scale.set(scale, scale, scale);
-
-      // Randomize star color shades of dark blue with glow
       const baseColor = new THREE.Color(0x004466);
       const glowColor = baseColor.clone().lerp(new THREE.Color(0x00e5ff), Math.random() * 0.7);
       star.material.color = glowColor;
       star.material.opacity = 0.6 + Math.random() * 0.4;
-
       starsGroup.add(star);
-
-      // Add a glow sprite for each star
       const spriteMaterial = new THREE.SpriteMaterial({
         map: spriteTexture,
         color: glowColor,
@@ -271,22 +347,15 @@
       starsGroup.add(sprite);
     }
 
-    // Add subtle ambient light for depth
     const ambientLight = new THREE.AmbientLight(0x002233, 0.3);
     scene.add(ambientLight);
 
-    // Camera initial position
     camera.position.z = 40;
 
-    // Animate stars rotation and twinkle effect
     function animate() {
       requestAnimationFrame(animate);
-
-      // Slowly rotate the star group for subtle movement
       starsGroup.rotation.y += 0.0007;
       starsGroup.rotation.x += 0.0003;
-
-      // Twinkle effect by varying opacity of stars and sprites
       starsGroup.children.forEach((child, idx) => {
         if (child.material && child.material.opacity !== undefined) {
           const baseOpacity = 0.6;
@@ -294,12 +363,10 @@
           child.material.opacity = THREE.MathUtils.clamp(baseOpacity + twinkle, 0.3, 1);
         }
       });
-
       renderer.render(scene, camera);
     }
     animate();
 
-    // Responsive resize
     window.addEventListener("resize", () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -308,3 +375,4 @@
   </script>
 </body>
 </html>
+
