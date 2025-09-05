@@ -57,6 +57,8 @@ body {
     font-weight: 600;
     text-decoration: none;
     color: #fff;
+    border: none;
+    cursor: pointer;
 }
 
 .profile-btn {
@@ -166,6 +168,71 @@ body {
     cursor: pointer;
 }
 
+.btn.remove-btn {
+    background: #dc3545;
+}
+
+.btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+#team-count {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #00f2fe;
+    margin-top: 10px;
+}
+
+#my-team-container {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    margin-bottom: 40px;
+}
+
+#my-team-container h2 {
+    font-size: 2em;
+    margin-bottom: 15px;
+}
+
+#my-team-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.my-team-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+.my-team-card h4 {
+    font-size: 1.1em;
+}
+
+.my-team-card p {
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.clear-btn {
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
 /* ---- Footer ---- */
 .footer {
     text-align: center;
@@ -220,7 +287,7 @@ body {
 <!-- Main Content -->
 <main class="main-content">
 <div class="teams-header">
-    <h2>Explore Teams</h2>
+    <h2>Explore Members</h2>
     <div class="filters">
         <input type="text" placeholder="🔍 Search members..." class="search-bar">
         <select class="filter-dropdown">
@@ -233,49 +300,21 @@ body {
     </div>
 </div>
 
-<div class="team-grid">
-    <!-- Profile Card Template -->
-    <div class="team-card">
-        <img src="https://via.placeholder.com/80" alt="Profile" class="team-pic">
-        <h3>John Doe</h3>
-        <p>Skills: C++, Web Dev</p>
-        <button class="btn">Add to Team</button>
+<div id="my-team-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <h2>Your Team</h2>
+        <div style="display: flex; align-items: center;">
+            <h3 id="team-count">0/5 Members</h3>
+            <button id="clear-team-btn" class="clear-btn" style="display: none;">Clear Team</button>
+        </div>
     </div>
+    <div id="my-team-grid" style="margin-top: 20px;">
+        <!-- Selected team members will be dynamically inserted here -->
+    </div>
+</div>
 
-    <div class="team-card">
-        <img src="https://via.placeholder.com/80" alt="Profile" class="team-pic">
-        <h3>Jane Smith</h3>
-        <p>Skills: Python, ML</p>
-        <button class="btn">Add to Team</button>
-    </div>
-
-    <div class="team-card">
-        <img src="https://via.placeholder.com/80" alt="Profile" class="team-pic">
-        <h3>Mike Lee</h3>
-        <p>Skills: UI/UX, Web Dev</p>
-        <button class="btn">Add to Team</button>
-    </div>
-
-    <div class="team-card">
-        <img src="https://via.placeholder.com/80" alt="Profile" class="team-pic">
-        <h3>Emily White</h3>
-        <p>Skills: AI, Data Science</p>
-        <button class="btn">Add to Team</button>
-    </div>
-
-    <div class="team-card">
-        <img src="https://via.placeholder.com/80" alt="Profile" class="team-pic">
-        <h3>Chris Evans</h3>
-        <p>Skills: C++, Game Dev</p>
-        <button class="btn">Add to Team</button>
-    </div>
-
-    <div class="team-card">
-        <img src="https://via.placeholder.com/80" alt="Profile" class="team-pic">
-        <h3>Sarah Connor</h3>
-        <p>Skills: Cybersecurity</p>
-        <button class="btn">Add to Team</button>
-    </div>
+<div id="team-grid" class="team-grid">
+    <!-- All member profiles will be dynamically inserted here by JavaScript -->
 </div>
 </main>
 
@@ -285,5 +324,159 @@ body {
 <p>© 2025 Team-Up | The Programming Club</p>
 </footer>
 
+<script>
+    const teamCountElement = document.getElementById('team-count');
+    const clearTeamBtn = document.getElementById('clear-team-btn');
+    const teamGridElement = document.getElementById('team-grid');
+    const myTeamGridElement = document.getElementById('my-team-grid');
+    const MAX_TEAM_SIZE = 5;
+    const LOCAL_STORAGE_KEY = 'teamMembers';
+
+    // The list of all available profiles
+    const profileData = [
+        { name: "John Doe", skills: "C++, Web Dev" },
+        { name: "Jane Smith", skills: "Python, ML" },
+        { name: "Mike Lee", skills: "UI/UX, Web Dev" },
+        { name: "Emily White", skills: "AI, Data Science" },
+        { name: "Chris Evans", skills: "C++, Game Dev" },
+        { name: "Sarah Connor", skills: "Cybersecurity" },
+        { name: "Alex Chen", skills: "React, Node.js" },
+        { name: "Maria Garcia", skills: "Java, Spring" },
+        { name: "David Kim", skills: "Unity, C#" },
+        { name: "Sophia Rodriguez", skills: "Data Analytics, SQL" },
+        { name: "Liam Miller", skills: "Cloud, AWS" },
+        { name: "Olivia Wilson", skills: "UX Research, Figma" },
+        { name: "Noah Brown", skills: "Blockchain, Solidity" },
+        { name: "Emma Davis", skills: "Mobile Dev, Flutter" },
+        { name: "Lucas Hall", skills: "Embedded Systems, C" }
+    ];
+
+    // Function to get the current team members from local storage
+    function getTeamMembers() {
+        const team = localStorage.getItem(LOCAL_STORAGE_KEY);
+        return team ? JSON.parse(team) : [];
+    }
+
+    // Function to save the current team members to local storage
+    function saveTeamMembers(team) {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(team));
+    }
+
+    // Function to render all available profile cards
+    function renderAllProfiles() {
+        const currentTeam = getTeamMembers();
+        teamGridElement.innerHTML = '';
+        profileData.forEach((profile, index) => {
+            const addedMember = currentTeam.find(member => member.name === profile.name);
+            const card = document.createElement('div');
+            card.className = 'team-card';
+            
+            let buttonHtml = '';
+            if (addedMember) {
+                // If member is in the team, show remove button
+                buttonHtml = `
+                    <button class="btn remove-btn" data-profile-name="${profile.name}">
+                        Remove from Team
+                    </button>
+                `;
+            } else {
+                // Otherwise, show add button, disabled if team is full
+                const isDisabled = currentTeam.length >= MAX_TEAM_SIZE;
+                buttonHtml = `
+                    <button class="btn add-member-btn" data-profile-name="${profile.name}" ${isDisabled ? 'disabled' : ''}>
+                        Add to Team
+                    </button>
+                `;
+            }
+
+            card.innerHTML = `
+                <img src="https://via.placeholder.com/80" alt="Profile" class="team-pic">
+                <h3>${profile.name}</h3>
+                <p>Skills: ${profile.skills}</p>
+                ${buttonHtml}
+            `;
+            teamGridElement.appendChild(card);
+        });
+
+        // Add event listeners after all buttons are rendered
+        document.querySelectorAll('.add-member-btn').forEach(button => {
+            button.addEventListener('click', handleAddMember);
+        });
+        document.querySelectorAll('.remove-btn').forEach(button => {
+            button.addEventListener('click', handleRemoveMember);
+        });
+    }
+
+    // Function to render the selected team members
+    function renderMyTeam() {
+        const currentTeam = getTeamMembers();
+        myTeamGridElement.innerHTML = '';
+        if (currentTeam.length === 0) {
+            myTeamGridElement.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">Your team is empty. Add members from the list below!</p>';
+            clearTeamBtn.style.display = 'none';
+        } else {
+            currentTeam.forEach(member => {
+                const card = document.createElement('div');
+                card.className = 'my-team-card';
+                card.innerHTML = `
+                    <h4>${member.name}</h4>
+                    <p>${member.skills}</p>
+                `;
+                myTeamGridElement.appendChild(card);
+            });
+            clearTeamBtn.style.display = 'inline-block';
+        }
+    }
+
+    // Update the team count display
+    function updateTeamCount() {
+        const currentTeam = getTeamMembers();
+        teamCountElement.textContent = `${currentTeam.length}/${MAX_TEAM_SIZE} Members`;
+    }
+
+    // Main render function that calls all other render functions
+    function renderApp() {
+        renderAllProfiles();
+        renderMyTeam();
+        updateTeamCount();
+    }
+
+    // Handle adding a member to the team
+    function handleAddMember(event) {
+        const button = event.target;
+        const profileName = button.dataset.profileName;
+        const selectedProfile = profileData.find(profile => profile.name === profileName);
+
+        const currentTeam = getTeamMembers();
+        if (currentTeam.length < MAX_TEAM_SIZE && !currentTeam.find(member => member.name === profileName)) {
+            currentTeam.push(selectedProfile);
+            saveTeamMembers(currentTeam);
+            renderApp();
+        }
+    }
+
+    // Handle removing a member from the team
+    function handleRemoveMember(event) {
+        const button = event.target;
+        const profileName = button.dataset.profileName;
+        
+        const currentTeam = getTeamMembers();
+        const updatedTeam = currentTeam.filter(member => member.name !== profileName);
+        saveTeamMembers(updatedTeam);
+        renderApp();
+    }
+    
+    // Handle clearing the entire team
+    function handleClearTeam() {
+        saveTeamMembers([]);
+        renderApp();
+    }
+
+    // Attach event listener for the clear button
+    clearTeamBtn.addEventListener('click', handleClearTeam);
+
+    // Initial render of the application
+    window.onload = renderApp;
+</script>
 </body>
 </html>

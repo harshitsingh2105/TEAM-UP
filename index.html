@@ -1,72 +1,120 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team-Up</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team-Up</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<!-- Navigation Bar -->
-<header class="navbar">
-<div class="logo">Team-Up</div>
-<nav class="nav-links">
-<a href="teams.html">Teams</a>
-<a href="loginpage.html" class="btn">Get Started</a>
-<a href="profile.html" class="profile-btn">👤</a>
+  <canvas id="bg-canvas"></canvas>
 
-</nav>
-</header>
+  <header class="navbar">
+    <div class="logo">Team-Up</div>
+    <nav class="nav-links">
+      <a href="teams.html">Teams</a>
+      <a href="loginpage.html" class="btn">Get Started</a>
+      <a href="profile.html" class="profile-btn">👤</a>
+    </nav>
+  </header>
 
+  <section class="hero">
+    <div class="hero-text">
+      <h2>Build Teams. Share Ideas. Achieve More.</h2>
+      <p>
+        Team-Up is your go-to platform for finding the perfect teammates. 
+        Whether it’s hackathons, projects, or competitions, we make collaboration simple. 
+        Discover like-minded people, share your skills, and create something amazing together.
+      </p>
+      <a href="teams.html" class="btn hero-btn">Explore Teams</a>
+    </div>
+    <div class="hero-image">
+      <img src="img.jpg" alt="Teamwork illustration" />
+    </div>
+  </section>
 
-<!-- Hero Section -->
-<section class="hero">
-<div class="hero-text">
-<h2>Build Teams. Share Ideas. Achieve More.</h2>
-<p>Team-Up is your go-to platform for finding the perfect teammates. 
-Whether it’s hackathons, projects, or competitions, we make collaboration simple. 
-Discover like-minded people, share your skills, and create something amazing together.</p>
-</div>
+  <section class="features">
+    <div class="feature-box">
+      <img src="global.jpg" alt="Global" />
+      <h3>Easy Team Formation</h3>
+      <p>
+        Find teammates based on skills, interests, and goals. 
+        No more struggling to form a perfect team for projects or hackathons.
+      </p>
+    </div>
+    
+    <div class="feature-box">
+      <img src="smart.jpg" alt="Smart Matching" />
+      <h3>Smart Matching</h3>
+      <p>
+        Our platform recommends the best matches so you can connect with 
+        people who complement your skills and boost your chances of success.
+      </p>
+    </div>
+    
+    <div class="feature-box">
+      <img src="project.jpg" alt="Projects" />
+      <h3>Project & Event Hub</h3>
+      <p>
+        Explore upcoming hackathons, coding contests, and events. 
+        Showcase your projects and get recognition from the community.
+      </p>
+    </div>
+  </section>
 
-<div class="hero-image">
-<img src="img.jpg" alt="Teamwork illustration" height="200px">
-</div>
-</section>
-
-
-<!-- Features Section -->
-<section class="features">
-  <div class="feature-box">
-    <img src="global.jpg" height="100px">
-    <h3> Easy Team Formation</h3>
-    <p>Find teammates based on skills, interests, and goals. 
-    No more struggling to form a perfect team for projects or hackathons.</p>
-  </div>
-  
-  <div class="feature-box">
-    <img src="smart.jpg" height="100px">
-    <h3></h3> Smart Matching</h3>
-    <p>Our platform recommends the best matches so you can connect with 
-    people who complement your skills and boost your chances of success.</p>
-  </div>
-  
-  <div class="feature-box">
-    <img src="project.jpg" height="100px">
-    <h3> Project & Event Hub</h3>
-    <p>Explore upcoming hackathons, coding contests, and events. 
-    Showcase your projects and get recognition from the community.</p>
-  </div>
-</section>
-
-
-
-
-  <!-- Footer -->
   <footer class="footer">
     <p>© 2025 Team-Up | The Programming Club</p>
   </footer>
 
-  
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bg-canvas"), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    // Particles
+    const particlesCount = 500;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particlesCount * 3);
+
+    for (let i = 0; i < particlesCount * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 20; // spread particles
+    }
+
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+    const material = new THREE.PointsMaterial({
+      color: 0x00e5ff,
+      size: 0.05,
+      transparent: true,
+      opacity: 0.8
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    camera.position.z = 5;
+
+    // Animate
+    function animate() {
+      requestAnimationFrame(animate);
+
+      particles.rotation.y += 0.001; // slow rotation
+      particles.rotation.x += 0.0005;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Handle Resize
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
 </body>
 </html>
