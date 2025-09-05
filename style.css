@@ -1,0 +1,95 @@
+/* styles.css */
+body {
+margin: 0;
+font-family: Arial, sans-serif;
+line-height: 1.6;
+}
+
+
+/* Navbar */
+.navbar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: #333;
+color: #fff;
+padding: 10px 20px;
+}
+
+
+.logo {
+font-size: 1.5em;
+font-weight: bold;
+}
+
+
+.nav-links a {
+margin: 0 10px;
+color: #fff;
+text-decoration: none;
+}
+
+
+.btn {
+background: #007BFF;
+padding: 6px 12px;
+border-radius: 4px;
+}
+
+
+.profile-btn {
+background: #555;
+border: none;
+color: white;
+padding: 6px 10px;
+border-radius: 50%;
+cursor: pointer;
+}
+
+
+/* Hero */
+.hero {
+display: flex;
+justify-content: space-around;
+align-items: center;
+padding: 40px 20px;
+background: #91dde9;
+}
+
+
+.hero-text {
+max-width: 50%;
+}
+
+
+.hero-image img {
+max-width: 100%;
+border-radius: 8px;
+}
+
+
+/* Features */
+.features {
+display: flex;
+justify-content: center;
+padding: 20px;
+gap: 15px;
+}
+
+
+.feature-box {
+flex: 1;
+padding: 20px;
+background: #eaeaea;
+text-align: center;
+border-radius: 6px;
+}
+
+
+/* Footer */
+.footer {
+text-align: center;
+padding: 15px;
+background: #333;
+color: #fff;
+}
