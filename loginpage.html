@@ -2,304 +2,301 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TeamSync – 3D Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team-Up - Login</title>
+  
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ---- Reset ---- */
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+
     body {
       font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63);
+      color: #fff;
+      line-height: 1.6;
       min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Background Canvas ---- */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ---- Navbar ---- */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px 30px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
+      backdrop-filter: blur(6px);
+    }
+
+    .logo {
+      font-size: 1.8em;
+      font-weight: bold;
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links a {
+      margin: 0 12px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #00e5ff;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background 0.3s, transform 0.2s;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .profile-btn {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: 0.3s;
+    }
+
+    .profile-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ---- Login Page Styles ---- */
+    .login-container {
+      flex-grow: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #fff;
-      overflow: hidden;
-      position: relative;
-      background: #0a0f25; /* dark blue background */
+      padding: 40px 20px;
     }
 
-    /* Canvas background */
-    #bg {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -1;
-      display: block;
-    }
-
-    /* ---- Container ---- */
-    .login-container {
-      width: 100%; max-width: 400px;
-      background: rgba(10, 15, 37, 0.75);
-      border: 1px solid rgba(0, 255, 255, 0.25);
-      border-radius: 16px;
-      padding: 40px 30px;
+    .login-box {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 40px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+      max-width: 450px;
+      width: 100%;
       text-align: center;
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
-      backdrop-filter: blur(15px);
-      position: relative;
-      z-index: 10;
-      transition: box-shadow 0.3s ease;
-    }
-    .login-container:hover {
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
     }
 
-    /* ---- Headings ---- */
-    .main-title {
-      font-size: 32px; font-weight: 700;
-      background: linear-gradient(135deg, #00aaff, #004466);
+    .login-box h2 {
+      font-size: 2.2em;
+      font-weight: 700;
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
-      letter-spacing: 1.2px;
-    }
-    .subtitle {
-      font-size: 15px;
-      color: rgba(255, 255, 255, 0.75);
-      margin-bottom: 32px;
-      font-weight: 500;
+      margin-bottom: 10px;
     }
 
-    /* ---- Form ---- */
-    .form-group { text-align: left; margin-bottom: 22px; }
-    label { font-size: 14px; color: #a0cfff; display: block; margin-bottom: 8px; font-weight: 600; }
-    .form-input {
-      width: 100%; padding: 14px 18px;
-      border-radius: 10px;
-      border: 1.5px solid rgba(0, 255, 255, 0.3);
-      background: rgba(10, 15, 37, 0.6);
-      color: #cceeff; font-size: 15px;
-      transition: border-color 0.3s ease, background 0.3s ease;
+    .login-box p {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 30px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
       font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
     }
-    .form-input::placeholder {
-      color: #7fbfff;
-      opacity: 0.7;
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 16px;
+      transition: border-color 0.3s, background 0.3s;
     }
-    .form-input:focus {
+
+    .input-group input:focus {
       outline: none;
+      background: rgba(255, 255, 255, 0.2);
       border-color: #00e5ff;
-      background: rgba(10, 15, 37, 0.85);
-      box-shadow: 0 0 8px #00e5ffaa;
     }
 
-    /* ---- Links ---- */
-    .forgot-password { text-align: right; margin: 12px 0 24px; }
-    .forgot-password a {
-      font-size: 14px;
-      color: #00cfff;
+    .login-btn {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1em;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .forgot-password {
+      display: block;
+      margin-top: 15px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9em;
       text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
-    .forgot-password a:hover { color: #4facfe; }
-
-    /* ---- Button ---- */
-    .sign-in-btn {
-      width: 100%; padding: 16px;
-      border: none; border-radius: 10px;
-      background: linear-gradient(135deg, #00e5ff, #004466);
-      color: #fff; font-size: 16px; font-weight: 700;
-      cursor: pointer; transition: background 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 0 12px #00e5ffaa;
-    }
-    .sign-in-btn:hover {
-      background: linear-gradient(135deg, #00ffff, #006699);
-      box-shadow: 0 0 20px #00ffffcc;
+      transition: color 0.3s;
     }
 
-    /* ---- Divider ---- */
-    .divider { display: flex; align-items: center; margin: 24px 0; }
-    .divider::before, .divider::after {
-      content: ""; flex: 1; height: 1px; background: rgba(0, 255, 255, 0.15);
-    }
-    .divider span {
-      padding: 0 14px;
-      font-size: 13px;
-      color: rgba(0, 255, 255, 0.5);
-      font-weight: 600;
-      letter-spacing: 0.8px;
-    }
-
-    /* ---- Social ---- */
-    .social-buttons {
-      display: flex;
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-    .social-btn {
-      flex: 1;
-      padding: 12px 0;
-      border-radius: 8px;
-      background: rgba(0, 255, 255, 0.1);
+    .forgot-password:hover {
       color: #00e5ff;
-      font-size: 14px;
-      text-decoration: none;
-      border: 1.5px solid rgba(0, 255, 255, 0.3);
-      text-align: center;
-      font-weight: 600;
-      transition: background 0.3s ease, border-color 0.3s ease;
-      box-shadow: 0 0 6px rgba(0, 229, 255, 0.3);
-    }
-    .social-btn:hover {
-      background: rgba(0, 255, 255, 0.25);
-      border-color: #00e5ff;
-      box-shadow: 0 0 14px #00e5ffcc;
     }
 
-    /* ---- Signup ---- */
     .signup-link {
-      font-size: 14px;
-      color: rgba(0, 255, 255, 0.6);
-      font-weight: 500;
+      margin-top: 25px;
+      color: rgba(255, 255, 255, 0.7);
     }
+
     .signup-link a {
       color: #00e5ff;
+      font-weight: 600;
       text-decoration: none;
-      font-weight: 700;
-      transition: color 0.3s ease;
     }
-    .signup-link a:hover { color: #4facfe; }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---- Footer ---- */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: auto;
+      background: rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 768px) {
+      .login-box {
+        padding: 30px;
+        max-width: 90%;
+      }
+    }
   </style>
 </head>
 <body>
-  <canvas id="bg"></canvas>
+  <canvas id="bg-canvas"></canvas>
 
-  <div class="login-container" role="main" aria-label="Login form">
-    <h1 class="main-title">Welcome Back</h1>
-    <p class="subtitle">Sign in to continue</p>
+  <header class="navbar">
+    <div class="logo">Team-Up</div>
+    <nav class="nav-links">
+      <a href="teams.html">Teams</a>
+      <a href="index.html">Home</a>
+      <a href="profile.html" class="profile-btn">👤</a>
+    </nav>
+  </header>
 
-    <form>
-      <div class="form-group">
-        <label for="email">Email address</label>
-        <input type="email" id="email" class="form-input" placeholder="you@example.com" required autocomplete="email" />
+  <section class="login-container">
+    <div class="login-box">
+      <h2>Welcome Back!</h2>
+      <p>Log in to connect and collaborate.</p>
+      <form class="login-form">
+        <div class="input-group">
+          <label for="username">Email or Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn login-btn">Login</button>
+        <a href="#" class="forgot-password">Forgot Password?</a>
+      </form>
+      <div class="signup-link">
+        Don't have an account? <a href="#">Sign Up</a>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" class="form-input" placeholder="Enter your password" required autocomplete="current-password" />
-      </div>
-      <div class="forgot-password"><a href="#" tabindex="0">Forgot Password?</a></div>
-      <button type="submit" class="sign-in-btn">Sign In</button>
-    </form>
-
-    <div class="divider"><span>or continue with</span></div>
-    <div class="social-buttons">
-      <a href="#" class="social-btn" tabindex="0" aria-label="Sign in with Google">Google</a>
-      <a href="#" class="social-btn" tabindex="0" aria-label="Sign in with GitHub">GitHub</a>
-      <a href="#" class="social-btn" tabindex="0" aria-label="Sign in with LinkedIn">LinkedIn</a>
     </div>
-    <div class="signup-link">Don’t have an account? <a href="#" tabindex="0">Sign up</a></div>
-  </div>
+  </section>
 
-  <!-- Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+  <footer class="footer">
+    <p>© 2025 Team-Up | The Programming Club</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <script>
-    const canvas = document.getElementById("bg");
     const scene = new THREE.Scene();
-
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bg-canvas"), alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x0a0f25, 1); // dark blue background
+    renderer.setPixelRatio(window.devicePixelRatio);
 
-    // Create a group to hold stars for rotation
-    const starsGroup = new THREE.Group();
-    scene.add(starsGroup);
+    // Particles
+    const particlesCount = 500;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particlesCount * 3);
 
-    // Star parameters
-    const starCount = 400;
-    const starGeometry = new THREE.SphereGeometry(0.1, 8, 8);
-
-    // Create a glowing material using MeshBasicMaterial with emissive color
-    const starMaterial = new THREE.MeshBasicMaterial({
-      color: 0x004466,
-      transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending,
-    });
-
-    // Create a glow sprite texture for stars
-    const spriteTexture = new THREE.TextureLoader().load(
-      "https://threejs.org/examples/textures/sprites/glow.png"
-    );
-
-    // Create stars with glow sprites
-    for (let i = 0; i < starCount; i++) {
-      // Create star mesh
-      const star = new THREE.Mesh(starGeometry, starMaterial.clone());
-
-      // Random position in a sphere shell (radius 20 to 50)
-      const radius = THREE.MathUtils.randFloat(20, 50);
-      const theta = THREE.MathUtils.randFloat(0, Math.PI * 2);
-      const phi = THREE.MathUtils.randFloat(0, Math.PI);
-
-      star.position.set(
-        radius * Math.sin(phi) * Math.cos(theta),
-        radius * Math.sin(phi) * Math.sin(theta),
-        radius * Math.cos(phi)
-      );
-
-      // Random scale for variety
-      const scale = THREE.MathUtils.randFloat(0.5, 1.2);
-      star.scale.set(scale, scale, scale);
-
-      // Randomize star color shades of dark blue with glow
-      const baseColor = new THREE.Color(0x004466);
-      const glowColor = baseColor.clone().lerp(new THREE.Color(0x00e5ff), Math.random() * 0.7);
-      star.material.color = glowColor;
-      star.material.opacity = 0.6 + Math.random() * 0.4;
-
-      starsGroup.add(star);
-
-      // Add a glow sprite for each star
-      const spriteMaterial = new THREE.SpriteMaterial({
-        map: spriteTexture,
-        color: glowColor,
-        transparent: true,
-        opacity: 0.3 + Math.random() * 0.4,
-        blending: THREE.AdditiveBlending,
-      });
-      const sprite = new THREE.Sprite(spriteMaterial);
-      sprite.scale.set(1.5 * scale, 1.5 * scale, 1);
-      sprite.position.copy(star.position);
-      starsGroup.add(sprite);
+    for (let i = 0; i < particlesCount * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 20;
     }
 
-    // Add subtle ambient light for depth
-    const ambientLight = new THREE.AmbientLight(0x002233, 0.3);
-    scene.add(ambientLight);
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
-    // Camera initial position
-    camera.position.z = 40;
+    const material = new THREE.PointsMaterial({
+      color: 0x00e5ff,
+      size: 0.05,
+      transparent: true,
+      opacity: 0.8
+    });
 
-    // Animate stars rotation and twinkle effect
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    camera.position.z = 5;
+
+    // Animate
     function animate() {
       requestAnimationFrame(animate);
 
-      // Slowly rotate the star group for subtle movement
-      starsGroup.rotation.y += 0.0007;
-      starsGroup.rotation.x += 0.0003;
-
-      // Twinkle effect by varying opacity of stars and sprites
-      starsGroup.children.forEach((child, idx) => {
-        if (child.material && child.material.opacity !== undefined) {
-          const baseOpacity = 0.6;
-          const twinkle = Math.sin(Date.now() * 0.002 + idx) * 0.3;
-          child.material.opacity = THREE.MathUtils.clamp(baseOpacity + twinkle, 0.3, 1);
-        }
-      });
+      particles.rotation.y += 0.001;
+      particles.rotation.x += 0.0005;
 
       renderer.render(scene, camera);
     }
     animate();
 
-    // Responsive resize
+    // Handle Resize
     window.addEventListener("resize", () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();

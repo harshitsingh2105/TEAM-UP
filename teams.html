@@ -1,482 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team-Up - Teams</title>
-<style>
-/* ---- Reset ---- */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team-Up - Teams</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        /* Team Page Specific Styles to Match Theme */
 
-body {
-    font-family: "Segoe UI", Tahoma, sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63);
-    color: #fff;
-    line-height: 1.6;
-    min-height: 100vh;
-}
+        /* General layout for main content */
+        .main-content {
+            padding: 40px 30px;
+            position: relative;
+            z-index: 1; /* Ensure content is above the canvas */
+        }
 
-/* ---- Navbar ---- */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 15px 30px;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
-}
+        /* Header for the teams section */
+        .teams-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        /* Heading style with gradient */
+        .teams-header h2 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.logo {
-    font-size: 1.8em;
-    font-weight: bold;
-    background: linear-gradient(135deg, #00f2fe, #4facfe);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+        /* Filter bar styles */
+        .filters {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
 
-.nav-links a {
-    margin: 0 12px;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.3s;
-}
+        /* Search input and dropdown styles */
+        .search-bar, .filter-dropdown {
+            padding: 10px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
 
-.nav-links a:hover {
-    color: #00e5ff;
-}
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-.btn {
-    background: linear-gradient(135deg, #00f2fe, #4facfe);
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-weight: 600;
-    text-decoration: none;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
+        .search-bar:focus, .filter-dropdown:focus {
+            border-color: #00e5ff;
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+        }
 
-.profile-btn {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px 12px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: 0.3s;
-    text-decoration: none;
-    color: #fff;
-}
+        .filter-dropdown option {
+            background-color: #0f0c29;
+            color: #fff;
+        }
 
-.profile-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
+        /* Grid for team cards */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
 
-/* ---- Main Content ---- */
-.main-content {
-    padding: 40px 30px;
-}
+        /* Individual team member card */
+        .team-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
 
-.teams-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-}
+        .team-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
 
-.teams-header h2 {
-    font-size: 2.5em;
-    background: linear-gradient(135deg, #00f2fe, #4facfe);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+        .team-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #4facfe;
+            margin-bottom: 15px;
+        }
 
-.filters {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
+        .team-card h3 {
+            font-size: 1.4em;
+            margin-bottom: 5px;
+            color: #00e5ff;
+        }
 
-.search-bar, .filter-dropdown {
-    padding: 10px 15px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    outline: none;
-    transition: border-color 0.3s;
-}
+        .team-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
 
-.search-bar:focus, .filter-dropdown:focus {
-    border-color: #4facfe;
-}
+        /* Buttons on the cards */
+        .team-card .btn {
+            width: 100%;
+            display: block;
+        }
+        .btn.remove-btn {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .btn.remove-btn:hover {
+            transform: scale(1.05);
+        }
 
-.filter-dropdown option {
-    background-color: #302b63;
-}
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+            pointer-events: none;
+        }
 
-.team-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-}
+        /* Your Team Section */
+        #my-team-container {
+            margin-top: 20px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 40px;
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+        }
 
-.team-card {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
+        #my-team-container h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-.team-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-}
+        #team-count {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00e5ff;
+            margin-top: 10px;
+        }
 
-.team-pic {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #4facfe;
-    margin-bottom: 15px;
-}
+        #my-team-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
 
-.team-card h3 {
-    font-size: 1.4em;
-    margin-bottom: 5px;
-    color: #00e5ff;
-}
+        .my-team-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 18px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s;
+        }
 
-.team-card p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9em;
-    margin-bottom: 15px;
-}
+        .my-team-card:hover {
+            transform: translateY(-3px);
+        }
 
-.team-card .btn {
-    padding: 8px 20px;
-    font-size: 0.9em;
-    border: none;
-    cursor: pointer;
-}
+        .my-team-card h4 {
+            font-size: 1.1em;
+            margin-bottom: 4px;
+            color: #00f2fe;
+        }
 
-.btn.remove-btn {
-    background: #dc3545;
-}
+        .my-team-card p {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-.btn:disabled {
-    background: #6c757d;
-    cursor: not-allowed;
-}
+        /* Clear team button */
+        .clear-btn {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-left: 20px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .clear-btn:hover {
+            transform: scale(1.05);
+        }
 
-#team-count {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #00f2fe;
-    margin-top: 10px;
-}
-
-#my-team-container {
-    margin-top: 20px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    margin-bottom: 40px;
-}
-
-#my-team-container h2 {
-    font-size: 2em;
-    margin-bottom: 15px;
-}
-
-#my-team-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-}
-
-.my-team-card {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-}
-
-.my-team-card h4 {
-    font-size: 1.1em;
-}
-
-.my-team-card p {
-    font-size: 0.8em;
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.clear-btn {
-    background: linear-gradient(135deg, #ff7e5f, #feb47b);
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-weight: 600;
-    text-decoration: none;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    margin-left: 20px;
-}
-
-/* ---- Footer ---- */
-.footer {
-    text-align: center;
-    padding: 20px;
-    margin-top: 40px;
-    background: rgba(255, 255, 255, 0.05);
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.8);
-}
-
-/* ---- Media Queries ---- */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    .nav-links {
-        margin-top: 10px;
-    }
-    .nav-links a {
-        margin: 0 8px;
-    }
-    .teams-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-    .filters {
-        flex-direction: column;
-        width: 100%;
-    }
-    .search-bar, .filter-dropdown {
-        width: 100%;
-    }
-}
-</style>
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .teams-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .filters {
+                flex-direction: column;
+                width: 100%;
+            }
+            .search-bar, .filter-dropdown {
+                width: 100%;
+            }
+            .team-card {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
 
-<!-- Navigation Bar -->
-<header class="navbar">
-<div class="logo">Team-Up</div>
-<nav class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="#" class="btn">Add New Team</a>
-    <a href="profile.html" class="profile-btn">👤</a>
-</nav>
-</header>
+    <header class="navbar">
+        <div class="logo">Team-Up</div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="profile.html" class="profile-btn">👤</a>
+        </nav>
+    </header>
 
-
-<!-- Main Content -->
-<main class="main-content">
-<div class="teams-header">
-    <h2>Explore Members</h2>
-    <div class="filters">
-        <input type="text" placeholder="🔍 Search members..." class="search-bar">
-        <select class="filter-dropdown">
-            <option value="">Filter by Skill</option>
-            <option value="cpp">C++</option>
-            <option value="python">Python</option>
-            <option value="webdev">Web Dev</option>
-            <option value="ml">Machine Learning</option>
-        </select>
-    </div>
-</div>
-
-<div id="my-team-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-        <h2>Your Team</h2>
-        <div style="display: flex; align-items: center;">
-            <h3 id="team-count">0/5 Members</h3>
-            <button id="clear-team-btn" class="clear-btn" style="display: none;">Clear Team</button>
+    <main class="main-content">
+        <div class="teams-header">
+            <h2>Explore Members</h2>
+            <div class="filters">
+                <input type="text" placeholder="🔍 Search members..." class="search-bar">
+                <select class="filter-dropdown">
+                    <option value="">Filter by Skill</option>
+                    <option value="cpp">C++</option>
+                    <option value="python">Python</option>
+                    <option value="webdev">Web Dev</option>
+                    <option value="ml">Machine Learning</option>
+                    <option value="ui/ux">UI/UX</option>
+                    <option value="ai">AI</option>
+                    <option value="data science">Data Science</option>
+                    <option value="game dev">Game Dev</option>
+                    <option value="cybersecurity">Cybersecurity</option>
+                    <option value="react">React</option>
+                    <option value="node.js">Node.js</option>
+                    <option value="java">Java</option>
+                    <option value="spring">Spring</option>
+                    <option value="unity">Unity</option>
+                    <option value="c#">C#</option>
+                    <option value="data analytics">Data Analytics</option>
+                    <option value="sql">SQL</option>
+                    <option value="cloud">Cloud</option>
+                    <option value="aws">AWS</option>
+                    <option value="ux research">UX Research</option>
+                    <option value="figma">Figma</option>
+                    <option value="blockchain">Blockchain</option>
+                    <option value="solidity">Solidity</option>
+                    <option value="mobile dev">Mobile Dev</option>
+                    <option value="flutter">Flutter</option>
+                    <option value="embedded systems">Embedded Systems</option>
+                    <option value="c">C</option>
+                </select>
+            </div>
         </div>
-    </div>
-    <div id="my-team-grid" style="margin-top: 20px;">
-        <!-- Selected team members will be dynamically inserted here -->
-    </div>
-</div>
 
-<div id="team-grid" class="team-grid">
-    <!-- All member profiles will be dynamically inserted here by JavaScript -->
-</div>
-</main>
+        <div id="my-team-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <h2>Your Team</h2>
+                <div style="display: flex; align-items: center;">
+                    <h3 id="team-count">0/5 Members</h3>
+                    <button id="clear-team-btn" class="clear-btn" style="display: none;">Clear Team</button>
+                </div>
+            </div>
+            <div id="my-team-grid" style="margin-top: 20px;">
+                </div>
+        </div>
 
+        <div id="team-grid" class="team-grid">
+            </div>
+    </main>
 
-<!-- Footer -->
-<footer class="footer">
-<p>© 2025 Team-Up | The Programming Club</p>
-</footer>
+    <footer class="footer">
+        <p>© 2025 Team-Up | The Programming Club</p>
+    </footer>
 
-<script>
-    const teamCountElement = document.getElementById('team-count');
-    const clearTeamBtn = document.getElementById('clear-team-btn');
-    const teamGridElement = document.getElementById('team-grid');
-    const myTeamGridElement = document.getElementById('my-team-grid');
-    const MAX_TEAM_SIZE = 5;
-    const LOCAL_STORAGE_KEY = 'teamMembers';
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
 
-    // The list of all available profiles
-    const profileData = [
-        { name: "John Doe", skills: "C++, Web Dev" },
-        { name: "Jane Smith", skills: "Python, ML" },
-        { name: "Mike Lee", skills: "UI/UX, Web Dev" },
-        { name: "Emily White", skills: "AI, Data Science" },
-        { name: "Chris Evans", skills: "C++, Game Dev" },
-        { name: "Sarah Connor", skills: "Cybersecurity" },
-        { name: "Alex Chen", skills: "React, Node.js" },
-        { name: "Maria Garcia", skills: "Java, Spring" },
-        { name: "David Kim", skills: "Unity, C#" },
-        { name: "Sophia Rodriguez", skills: "Data Analytics, SQL" },
-        { name: "Liam Miller", skills: "Cloud, AWS" },
-        { name: "Olivia Wilson", skills: "UX Research, Figma" },
-        { name: "Noah Brown", skills: "Blockchain, Solidity" },
-        { name: "Emma Davis", skills: "Mobile Dev, Flutter" },
-        { name: "Lucas Hall", skills: "Embedded Systems, C" }
-    ];
+    <script>
+        // Three.js Background Animation Script
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bg-canvas"), alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
 
-    // Function to get the current team members from local storage
-    function getTeamMembers() {
-        const team = localStorage.getItem(LOCAL_STORAGE_KEY);
-        return team ? JSON.parse(team) : [];
-    }
+        // Particles
+        const particlesCount = 500;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particlesCount * 3);
 
-    // Function to save the current team members to local storage
-    function saveTeamMembers(team) {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(team));
-    }
-
-    // Function to render all available profile cards
-    function renderAllProfiles() {
-        const currentTeam = getTeamMembers();
-        teamGridElement.innerHTML = '';
-        profileData.forEach((profile, index) => {
-            const addedMember = currentTeam.find(member => member.name === profile.name);
-            const card = document.createElement('div');
-            card.className = 'team-card';
-            
-            let buttonHtml = '';
-            if (addedMember) {
-                // If member is in the team, show remove button
-                buttonHtml = `
-                    <button class="btn remove-btn" data-profile-name="${profile.name}">
-                        Remove from Team
-                    </button>
-                `;
-            } else {
-                // Otherwise, show add button, disabled if team is full
-                const isDisabled = currentTeam.length >= MAX_TEAM_SIZE;
-                buttonHtml = `
-                    <button class="btn add-member-btn" data-profile-name="${profile.name}" ${isDisabled ? 'disabled' : ''}>
-                        Add to Team
-                    </button>
-                `;
-            }
-
-            card.innerHTML = `
-                <img src="https://via.placeholder.com/80" alt="Profile" class="team-pic">
-                <h3>${profile.name}</h3>
-                <p>Skills: ${profile.skills}</p>
-                ${buttonHtml}
-            `;
-            teamGridElement.appendChild(card);
-        });
-
-        // Add event listeners after all buttons are rendered
-        document.querySelectorAll('.add-member-btn').forEach(button => {
-            button.addEventListener('click', handleAddMember);
-        });
-        document.querySelectorAll('.remove-btn').forEach(button => {
-            button.addEventListener('click', handleRemoveMember);
-        });
-    }
-
-    // Function to render the selected team members
-    function renderMyTeam() {
-        const currentTeam = getTeamMembers();
-        myTeamGridElement.innerHTML = '';
-        if (currentTeam.length === 0) {
-            myTeamGridElement.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7);">Your team is empty. Add members from the list below!</p>';
-            clearTeamBtn.style.display = 'none';
-        } else {
-            currentTeam.forEach(member => {
-                const card = document.createElement('div');
-                card.className = 'my-team-card';
-                card.innerHTML = `
-                    <h4>${member.name}</h4>
-                    <p>${member.skills}</p>
-                `;
-                myTeamGridElement.appendChild(card);
-            });
-            clearTeamBtn.style.display = 'inline-block';
+        for (let i = 0; i < particlesCount * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 20; // spread particles
         }
-    }
 
-    // Update the team count display
-    function updateTeamCount() {
-        const currentTeam = getTeamMembers();
-        teamCountElement.textContent = `${currentTeam.length}/${MAX_TEAM_SIZE} Members`;
-    }
+        geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
-    // Main render function that calls all other render functions
-    function renderApp() {
-        renderAllProfiles();
-        renderMyTeam();
-        updateTeamCount();
-    }
+        const material = new THREE.PointsMaterial({
+            color: 0x00e5ff,
+            size: 0.05,
+            transparent: true,
+            opacity: 0.8
+        });
 
-    // Handle adding a member to the team
-    function handleAddMember(event) {
-        const button = event.target;
-        const profileName = button.dataset.profileName;
-        const selectedProfile = profileData.find(profile => profile.name === profileName);
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
 
-        const currentTeam = getTeamMembers();
-        if (currentTeam.length < MAX_TEAM_SIZE && !currentTeam.find(member => member.name === profileName)) {
-            currentTeam.push(selectedProfile);
-            saveTeamMembers(currentTeam);
+        camera.position.z = 5;
+
+        // Animate
+        function animate() {
+            requestAnimationFrame(animate);
+
+            particles.rotation.y += 0.001; // slow rotation
+            particles.rotation.x += 0.0005;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle Resize
+        window.addEventListener("resize", () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Team Management Script
+        const teamCountElement = document.getElementById('team-count');
+        const clearTeamBtn = document.getElementById('clear-team-btn');
+        const teamGridElement = document.getElementById('team-grid');
+        const myTeamGridElement = document.getElementById('my-team-grid');
+        const searchBar = document.querySelector('.search-bar');
+        const filterDropdown = document.querySelector('.filter-dropdown');
+        const MAX_TEAM_SIZE = 5;
+        const LOCAL_STORAGE_KEY = 'teamMembers';
+
+        // The list of all available profiles
+        const profileData = [
+    { name: "Rahul Sharma", skills: "C++, Web Dev" },
+    { name: "Priya Singh", skills: "Python, ML" },
+    { name: "Amit Kumar", skills: "UI/UX, Web Dev" },
+    { name: "Neha Patel", skills: "AI, Data Science" },
+    { name: "Siddharth Jain", skills: "C++, Game Dev" },
+    { name: "Kavita Reddy", skills: "Cybersecurity" },
+    { name: "Arjun Desai", skills: "React, Node.js" },
+    { name: "Ananya Sharma", skills: "Java, Spring" },
+    { name: "Rohan Gupta", skills: "Unity, C#" },
+    { name: "Aisha Khan", skills: "Data Analytics, SQL" },
+    { name: "Vikram Malhotra", skills: "Cloud, AWS" },
+    { name: "Diya Rao", skills: "UX Research, Figma" },
+    { name: "Rajat Verma", skills: "Blockchain, Solidity" },
+    { name: "Shruti Bansal", skills: "Mobile Dev, Flutter" },
+    { name: "Kabir Singh", skills: "Embedded Systems, C" }
+];
+
+        // Function to get the current team members from local storage
+        function getTeamMembers() {
+            const team = localStorage.getItem(LOCAL_STORAGE_KEY);
+            return team ? JSON.parse(team) : [];
+        }
+
+        // Function to save the current team members to local storage
+        function saveTeamMembers(team) {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(team));
+        }
+
+        // Function to render all available profile cards based on filters
+        function renderAllProfiles() {
+            const currentTeam = getTeamMembers();
+            const searchQuery = searchBar.value.toLowerCase();
+            const filterSkill = filterDropdown.value.toLowerCase();
+            
+            teamGridElement.innerHTML = '';
+            
+            profileData.filter(profile => {
+                const nameMatch = profile.name.toLowerCase().includes(searchQuery);
+                const skillMatch = profile.skills.toLowerCase().includes(searchQuery);
+                const filterMatch = !filterSkill || profile.skills.toLowerCase().includes(filterSkill);
+                return (nameMatch || skillMatch) && filterMatch;
+            }).forEach(profile => {
+                const addedMember = currentTeam.find(member => member.name === profile.name);
+                const card = document.createElement('div');
+                card.className = 'team-card';
+                
+                let buttonHtml = '';
+                if (addedMember) {
+                    buttonHtml = `
+                        <button class="btn remove-btn" data-profile-name="${profile.name}">
+                            Remove from Team
+                        </button>
+                    `;
+                } else {
+                    const isDisabled = currentTeam.length >= MAX_TEAM_SIZE;
+                    buttonHtml = `
+                        <button class="btn add-member-btn" data-profile-name="${profile.name}" ${isDisabled ? 'disabled' : ''}>
+                            Add to Team
+                        </button>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <img src="pp.png" alt="Profile" class="team-pic">
+                    <h3>${profile.name}</h3>
+                    <p>Skills: ${profile.skills}</p>
+                    ${buttonHtml}
+                `;
+                teamGridElement.appendChild(card);
+            });
+
+            document.querySelectorAll('.add-member-btn').forEach(button => {
+                button.addEventListener('click', handleAddMember);
+            });
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', handleRemoveMember);
+            });
+        }
+
+        // Function to render the selected team members
+        function renderMyTeam() {
+            const currentTeam = getTeamMembers();
+            myTeamGridElement.innerHTML = '';
+            if (currentTeam.length === 0) {
+                myTeamGridElement.innerHTML = '<p style="color: rgba(255, 255, 255, 0.7); text-align: center;">Your team is empty. Add members from the list below!</p>';
+                clearTeamBtn.style.display = 'none';
+            } else {
+                currentTeam.forEach(member => {
+                    const card = document.createElement('div');
+                    card.className = 'my-team-card';
+                    card.innerHTML = `
+                        <h4>${member.name}</h4>
+                        <p>${member.skills}</p>
+                    `;
+                    myTeamGridElement.appendChild(card);
+                });
+                clearTeamBtn.style.display = 'inline-block';
+            }
+        }
+
+        // Update the team count display
+        function updateTeamCount() {
+            const currentTeam = getTeamMembers();
+            teamCountElement.textContent = `${currentTeam.length}/${MAX_TEAM_SIZE} Members`;
+        }
+
+        // Main render function that calls all other render functions
+        function renderApp() {
+            renderAllProfiles();
+            renderMyTeam();
+            updateTeamCount();
+        }
+
+        // Handle adding a member to the team
+        function handleAddMember(event) {
+            const button = event.target;
+            const profileName = button.dataset.profileName;
+            const selectedProfile = profileData.find(profile => profile.name === profileName);
+
+            const currentTeam = getTeamMembers();
+            if (currentTeam.length < MAX_TEAM_SIZE && !currentTeam.find(member => member.name === profileName)) {
+                currentTeam.push(selectedProfile);
+                saveTeamMembers(currentTeam);
+                renderApp();
+            }
+        }
+
+        // Handle removing a member from the team
+        function handleRemoveMember(event) {
+            const button = event.target;
+            const profileName = button.dataset.profileName;
+            
+            const currentTeam = getTeamMembers();
+            const updatedTeam = currentTeam.filter(member => member.name !== profileName);
+            saveTeamMembers(updatedTeam);
             renderApp();
         }
-    }
-
-    // Handle removing a member from the team
-    function handleRemoveMember(event) {
-        const button = event.target;
-        const profileName = button.dataset.profileName;
         
-        const currentTeam = getTeamMembers();
-        const updatedTeam = currentTeam.filter(member => member.name !== profileName);
-        saveTeamMembers(updatedTeam);
-        renderApp();
-    }
-    
-    // Handle clearing the entire team
-    function handleClearTeam() {
-        saveTeamMembers([]);
-        renderApp();
-    }
+        // Handle clearing the entire team
+        function handleClearTeam() {
+            saveTeamMembers([]);
+            renderApp();
+        }
 
-    // Attach event listener for the clear button
-    clearTeamBtn.addEventListener('click', handleClearTeam);
+        // Attach event listeners for filtering
+        searchBar.addEventListener('input', renderAllProfiles);
+        filterDropdown.addEventListener('change', renderAllProfiles);
+        clearTeamBtn.addEventListener('click', handleClearTeam);
 
-    // Initial render of the application
-    window.onload = renderApp;
-</script>
+        // Initial render of the application
+        window.onload = renderApp;
+    </script>
 </body>
 </html>
